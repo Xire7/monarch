@@ -7,7 +7,7 @@ import monarch_logo from "../public/assets/monarch logo.svg";
 const Navbar = () => {
   const navLinks = [
     { title: "About", path: "#features" },
-    { title: "Process Data", path: "process" },
+    { title: "Morph Data", path: "morph" },
   ];
   const [nav, setNav] = useState(false);
 

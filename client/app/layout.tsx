@@ -22,7 +22,6 @@ export default function RootLayout({
     <html lang="en" className="!scroll-smooth">
       <body className={poppins.className}>
         <div className="min-h-svh">{children}</div>
-        <Footer />
       </body>
     </html>
   );

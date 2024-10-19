@@ -7,7 +7,7 @@ import monarch_butterflies from "../public/assets/monarch_butterflies.png";
 
 const Header = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
+    <div className="flex flex-col items-center justify-center py-16">
       <Image
         className="drop-shadow-xl animate-fadeup"
         src={monarch_logo}
@@ -21,7 +21,7 @@ const Header = () => {
       </div>
       <div className="flex flex-row space-x-4 p-12 animate-fadeup">
         <button className="bg-orange-400 hover:bg-orange-300 text-white font-bold py-2 px-4 border-b-4 border-orange-600 hover:border-orange-400 rounded">
-          <Link className="flex flex-row space-x-2" href={"process"}>
+          <Link className="flex flex-row space-x-2" href={"#features"}>
             <p>Check It Out</p>
             <ArrowRight />
           </Link>
@@ -33,7 +33,7 @@ const Header = () => {
         </button>
       </div>
       <Image
-        className="absolute bottom-0 -right-10 opacity-40"
+        className="absolute bottom-0 right-0 opacity-40"
         src={monarch_butterflies}
         width={250}
         height={250}
