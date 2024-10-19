@@ -1,0 +1,28 @@
+{
+    "cols": [
+        "name",
+        "age",
+        "major",
+        "school"
+    ],
+    "rows:": [
+        [
+            "Greg",
+            20,
+            "CS",
+            "UCSD"
+        ],
+        [
+            "Pranay",
+            21,
+            "Math",
+            "UCLA"
+        ],
+        [
+            "Sushanth",
+            22,
+            "EE",
+            "UCB"
+        ]
+    ]
+}
