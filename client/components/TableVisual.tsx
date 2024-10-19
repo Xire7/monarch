@@ -1,29 +1,54 @@
 "use client";
-import {promises as fs} from 'fs';
+import React from 'react';
+import Column from './Column';
 
-interface TableVisualProps {
-    cols: string[];
-    rows: (string | number | boolean | Date)[][];
+interface Dataset {
+  name: string;
+  cols: string[];
+  rows: (string | number | boolean | Date)[][];
 }
 
-// const ColumnVisual: React.FC<ColumnVisualProps> = (cols, rows) => {
+const testData: Dataset[] = [
+  {  
+    name: "dataset1",
+    cols: ["name", "age", "major", "school"],
+    rows: [
+      ["Greg", 20, "CS", "UCSD"],
+      ["Pranay", 21, "Math", "UCLA"],
+      ["Sushanth", 22, "EE", "UCB"]
+    ]
+  },
+  {  
+    name: "dataset2",
+    cols: ["name", "age", "major", "school"],
+    rows: [
+      ["Caleb", 20, "CS", "UCSD"],
+      ["BibbleDibble", 21, "Math", "UCLA"],
+      ["Anne", 22, "EE", "UCB"]
+    ]
+  }
+];
 
-
-export default async function TableVisual() {
-    console.log(process.cwd() + '../test.json');
-    const file = await fs.readFile(process.cwd() + '../test.json', 'utf8');
-    const cols = ["name", "age", "school"]
-    const rows = [["John", 20, "Harvard"], ["Jane", 21, "MIT"]]
-
-    // const generateTable = (cols: string[], rows: (string | number | boolean | Date)[][]) => {
-    //     for (let i = 0; i < cols.length; ++i) {
-            
-    //     }
-
-    // }
+const TableVisual: React.FC = () => {
   return (
-    <div>
-      hello
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      {testData.map((dataset, index) => (
+        <div key={index} style={{ marginBottom: '2rem' }}>
+          <h1>{dataset.name}</h1>
+          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            {dataset.cols.map((col, colIndex) => (
+              <Column 
+                key={colIndex} 
+                colName={col} 
+                colIndex={colIndex} 
+                rowsInfo={dataset.rows} 
+              />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
-  )
-}
+  );
+};
+
+export default TableVisual;
