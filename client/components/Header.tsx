@@ -3,11 +3,18 @@ import React from "react";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import monarch_logo from "../public/assets/monarch logo.svg";
+import monarch_butterflies from "../public/assets/monarch_butterflies.png";
 
 const Header = () => {
   return (
-    <div className="flex flex-col items-center justify-center py-12">
-      <Image className="animate-pulse" src={monarch_logo} width={400} height={400} alt="monarch logo" />
+    <div className="flex flex-col items-center justify-center">
+      <Image
+        className="animate-pulse"
+        src={monarch_logo}
+        width={400}
+        height={400}
+        alt="monarch logo"
+      />
       <div className="text-8xl font-semibold p-8">Monarch</div>
       <div className="text-xl">
         Elegantly harness unprocessed data for processed measures.
@@ -25,6 +32,13 @@ const Header = () => {
           </Link>
         </button>
       </div>
+      <Image
+        className="absolute bottom-0 -right-10 opacity-40"
+        src={monarch_butterflies}
+        width={250}
+        height={250}
+        alt="monarch butterflies"
+      />
     </div>
   );
 };
