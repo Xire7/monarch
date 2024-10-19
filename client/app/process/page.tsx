@@ -1,8 +1,12 @@
 import React from 'react'
+import MultiCSVUpload from '@/components/MultiCSVUpload';
 
 const Process = () => {
   return (
-    <div>Process</div>
+    <>
+        <MultiCSVUpload/>
+    </>
+
   )
 }
 

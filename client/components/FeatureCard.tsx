@@ -1,3 +1,4 @@
+import React from "react";
 import { LucideIcon } from "lucide-react";
 
 interface FeatureCardProps {
@@ -12,12 +13,16 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
   description,
 }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-      <div className="flex justify-center mb-4">
-        <Icon />
+    <div className="relative bg-gradient-to-br from-orange-50 to-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
+      <div className="absolute top-0 right-0 w-20 h-20 bg-orange-100 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-500 ease-in-out"></div>
+      <div className="relative z-10">
+        <div className="flex justify-center mb-4 transition-transform group-hover:scale-110 duration-300">
+          <Icon className="text-orange-500" size={32} />
+        </div>
+        <h3 className="text-xl font-semibold mb-2 text-center text-gray-800">{title}</h3>
+        <p className="text-gray-600 text-center">{description}</p>
       </div>
-      <h3 className="text-xl font-semibold mb-2 text-center">{title}</h3>
-      <p className="text-gray-600 text-center">{description}</p>
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
     </div>
   );
 };
