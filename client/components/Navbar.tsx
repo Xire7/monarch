@@ -21,7 +21,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="flex flex-row justify-between items-center px-6 py-4">
+      <div className="flex flex-row justify-between items-center px-6 py-4 animate-fadedown">
         <div>
           <Link href={"/"}>
             <Image

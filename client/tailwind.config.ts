@@ -11,11 +11,32 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        // orange: {
-        //   300: "#fab575",
-        //   600: "#f7a04f",
-        //   900: "#ff8b1f",
-        // },
+      },
+      animation: {
+        fadedown: "fadedown 1s",
+        fadeup: "fadeup 1s",
+      },
+      keyframes: {
+        fadedown: {
+          "0%": {
+            opacity: "0",
+            transform: "translate(0px, -30px) scale(0.9)",
+          },
+          "100%": {
+            opacity: "100",
+            transform: "scale(1)",
+          },
+        },
+        fadeup: {
+          "0%": {
+            opacity: "0",
+            transform: "translate(0px, 10px) scale(0.95)",
+          },
+          "100%": {
+            opacity: "100",
+            transform: "translate(0px, 0px) scale(1)",
+          },
+        },
       },
     },
     plugins: [],

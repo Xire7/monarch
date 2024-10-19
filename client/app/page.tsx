@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 export default function Home() {
   return (
     <>
-      <div className="bg-gradient-to-b from-orange-50 to-orange-300 min-h-svh">
+      <div className="bg-gradient-to-b from-orange-50 to-orange-300 ">
         <Navbar />
         <Header />
         <div id="features">
