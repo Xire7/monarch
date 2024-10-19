@@ -7,7 +7,7 @@ import monarch_butterflies from "../public/assets/monarch_butterflies.png";
 
 const Header = () => {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center min-h-svh">
       <Image
         className="animate-pulse"
         src={monarch_logo}

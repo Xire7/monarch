@@ -9,8 +9,10 @@ export default function Home() {
       <div className="bg-gradient-to-b from-orange-50 to-orange-300 min-h-svh">
         <Navbar />
         <Header />
+        <div id="features">
+          <Features />
+        </div>
       </div>
-      <Features />
     </>
   );
 }
