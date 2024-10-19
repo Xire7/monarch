@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
+import Image from "next/image";
+import monarch_logo from "../public/assets/monarch logo.svg";
 
 const Navbar = () => {
   const navLinks = [
-   // { title: "Home", path: "/" },
+    // { title: "Home", path: "/" },
     { title: "About", path: "about" },
     { title: "Process Data", path: "process" },
   ];
@@ -20,11 +22,13 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="flex flex-row justify-between p-6">
+      <div className="flex flex-row justify-between items-center px-6 py-4">
         <div>
-          <Link href={"/"}>LOGO</Link>
+          <Link href={"/"}>
+            <Image src={monarch_logo} width={50} height={50} alt="monarch logo" />
+          </Link>
         </div>
-        <div className="flex flex-row space-x-6">
+        <div className="flex flex-row space-x-8">
           {navLinks.map((link) => (
             <Link href={link.path}>
               <p className="hover:text-black/50">{link.title}</p>
