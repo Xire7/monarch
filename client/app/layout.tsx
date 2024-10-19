@@ -9,7 +9,6 @@ const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-
 export const metadata: Metadata = {
   title: "Monarch",
   description: "EDIT LATER", // TODO: EDIT LATER
@@ -22,14 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      
-      <body
-        className={poppins.className}>
-          <Navbar/>
+      <body className={poppins.className}>
+        <Navbar />
         <div className="min-h-svh">{children}</div>
-        <Footer/>
+        <Footer />
       </body>
-     
     </html>
   );
 }

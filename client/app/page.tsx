@@ -1,7 +1,12 @@
 // Landing Page
-import Image from "next/image";
-import Introduction from "@/components/Introduction";
+import Features from "@/components/Features";
+import Header from "@/components/Header";
 
 export default function Home() {
-  return <Introduction />;
+  return (
+    <>
+      <Header />
+      <Features />
+    </>
+  );
 }
