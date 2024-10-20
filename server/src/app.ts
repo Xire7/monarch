@@ -1,8 +1,9 @@
 import express from 'express';
 import fileUpload from './routes/upload/fileUpload'
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
 const app = express();
-const router = express.Router();
+
 app.use(express.json());  // Enable JSON body parsing
 const port = process.env.PORT;
 //api exposure
