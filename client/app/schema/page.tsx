@@ -15,20 +15,19 @@ const Schema = () => {
   const [loading, setLoading] = useState(true);
   const [schemaData, setSchemaData] = useState(null);
 
-  useEffect(() => {
-    const storedData = sessionStorage.getItem('schemaData');
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData);
-        setIssues(parsedData);
-        setSchemaData(parsedData);
-      } catch (error) {
-        console.error('Error parsing stored data:', error);
-        setIssues([]);
-      }
+useEffect(() => {
+  const storedData = sessionStorage.getItem('schemaData');
+  if (storedData) {
+    try {
+      const parsedData = JSON.parse(storedData);
+      setIssues(parsedData);
+      setSchemaData(parsedData);
+    } catch (error) {
+      console.error('Error parsing stored data:', error);
+      setIssues([]);
     }
-    setLoading(false);
-  }, []);
+  }
+}, []);
 
   // temp
   const data = testData;
@@ -97,19 +96,10 @@ const Schema = () => {
   };
 
   useEffect(() => {
-    if (!loading && issues.length > 0) {
-      const newGraph = buildGraph();
-      setGraph(newGraph);
-    }
-  }, [issueNumber, loading, issues]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (issues.length === 0) {
-    return <div>No issues found.</div>;
-  }
+    const newGraph = buildGraph();
+    setGraph(newGraph);
+    setLoading(false);
+  }, [issueNumber, loading]);
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">
