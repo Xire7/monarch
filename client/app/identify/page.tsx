@@ -31,7 +31,7 @@ const Identify = () => {
 
   return (
     <div className="flex flex-col justify-start bg-gradient-to-b from-orange-400 to-orange-300 min-h-svh p-32 pb-0">
-      <p className="text-8xl font-medium text-white leading-normal">
+      <p className="text-8xl font-medium text-white leading-normal animate-fadedown">
         Thanks for waiting! <br /> Here's what we noticed.
       </p>
 
@@ -44,7 +44,7 @@ const Identify = () => {
         <Issue description={issue} number={index + 1} total={issues.length} />
       ))}
 
-      <div className="flex flex-row fixed bottom-8 right-8 text-white space-x-8">
+      <div className="flex flex-row fixed bottom-8 right-8 text-white space-x-8 animate-fadeup">
         <p>
           [ {Math.round((scrollPosition / maxScrollY) * issues.length)} /{" "}
           {issues.length} ]
