@@ -7,7 +7,7 @@ from typing import List, Dict, Any, Optional
 import boto3
 import csv
 import io
-from driver import gen_issues
+from driver import serve_report
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 from uuid import uuid4
@@ -81,12 +81,12 @@ async def get_s3_file(file_id: str) -> Dict[str, Any]:
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON file")   
 
-@app.post("/match-to-issues")
-async def get_issues(request: Request) -> Dict[str, Any]:
-    data = await request.json()
-    jdfs = data['json_data']
-    issues = gen_issues(jdfs)
-    return issues
+# @app.post("/match-to-issues")
+# async def get_issues(request: Request) -> Dict[str, Any]:
+#     data = await request.json()
+#     jdfs = data['json_data']
+#     issues = serve_report(jdfs)
+#     return issues
 
 def datasetS3CsvToJson(bucket_name: str, s3_key: str) -> Optional[Dict[str, Any]]:
     dataset: Dict[str, Any] = {}
@@ -118,10 +118,10 @@ def csvsToJson(s3_ids: List[str], bucket_name) -> str:
             print(f"Error processing {s3_id}: {str(e)}")
     
     json_datasets = json.dumps(datasets, indent=2)
-    issues = gen_issues(json_datasets)
+    issues = serve_report(json_datasets)
 
     # Generate a unique S3 key for the results
-    result_key = f"matching_results_{uuid4()}.json"
+    result_key = f"serve_report_{uuid4()}.json"
 
     # Upload the issues (JSON array) to S3
     try:

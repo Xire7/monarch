@@ -3,12 +3,15 @@
 import React, { useState } from "react";
 import { Upload, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 const UploadCSV = () => {
+  const router = useRouter();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadStatus, setUploadStatus] = useState<string>("");
   const [resultUrl, setResultUrl] = useState<string>("");
   const [readyToNotify, setReadyToNotify] = useState<boolean[]>([]);
+  const [resultData, setResultData] = useState(null);
 
   const getFileNames = () => {
     var fileNames = [];
@@ -40,6 +43,32 @@ const UploadCSV = () => {
       handleFileUpload(selectedFiles[i], i);
     }
     notifyModel();
+  };
+
+  // Fetch the result data from the PreSigned URL
+  const fetchResultData = async (url: string) => {
+    try {
+      console.log("Fetching data from URL:", url);
+      const response = await fetch(url);
+      console.log("Response status:", response.status);
+
+      if (!response.ok) {
+        console.log("Response not OK. Status Text:", response.statusText);
+        throw new Error(`Failed to fetch presigned result data: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Fetched data:", data);
+      setResultData(data);
+      
+      // Store the data in session storage
+      sessionStorage.setItem('schemaData', JSON.stringify(data));
+      
+      // Redirect to the schema page
+      router.push('/schema');
+    } catch (error) {
+      console.error('Error fetching result data:', error);
+    }
   };
 
   // Handle file upload
@@ -115,14 +144,21 @@ const UploadCSV = () => {
     );
 
     if (!readyToNotify.includes(false)) {
-      const notifyBackendResult = await notifyBackendResponse.json();
-
-      if (notifyBackendResponse.ok) {
-        setResultUrl(notifyBackendResult.presignedUrl);
-        setUploadStatus("File processed successfully.");
-      } else {
-        throw new Error("Failed to notify backend");
+      const notifyBackendResult = await notifyBackendResponse.json(); // found
+      
+      try {
+        if (notifyBackendResponse.ok) {
+          setResultUrl(notifyBackendResult.presignedUrl);
+          setUploadStatus("File processed successfully.");
+          fetchResultData(notifyBackendResult.presignedUrl);
+        } else {
+          throw new Error("Failed to notify backend");
+        }
+      } catch (error) {
+        console.error("Error notifying backend:", error);
+        setUploadStatus("Error notifying backend");
       }
+
     }
   };
 

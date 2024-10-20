@@ -11,6 +11,14 @@ const Schema = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [issueNumber, setIssueNumber] = useState(1);
   const [complete, setComplete] = useState(false);
+  const [schemaData, setSchemaData] = useState(null);
+
+  useEffect(() => {
+    const storedData = sessionStorage.getItem("schemaData");
+    if (storedData) {
+      setSchemaData(JSON.parse(storedData));
+    }
+  }, [])
 
   // temp
   const data = testData;
