@@ -3,10 +3,18 @@
 import React, { useState } from "react";
 import { Upload, X } from "lucide-react";
 import Link from "next/link";
-import FileUploadComponent from "./FileUploadComponent";
 
 const UploadCSV = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [uploadStatus, setUploadStatus] = useState<string>("");
+  const [resultUrl, setResultUrl] = useState<string>("");
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const newFiles = Array.from(event.target.files);
+      setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    }
+  };
 
   const removeFile = (indexToRemove: number) => {
     setSelectedFiles((prevFiles) =>
@@ -19,31 +27,24 @@ const UploadCSV = () => {
     // Handle the submission of multiple files here
     console.log("Submitting files:", selectedFiles);
     // You would typically send these files to your server or process them here
-  };
-
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadStatus, setUploadStatus] = useState<string>("");
-  const [resultUrl, setResultUrl] = useState<string>("");
-  const backend_url = "54.183.36.99:80";
-
-  // Handle file input changes
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
+    for (var file in selectedFiles) {
+      handleFileUpload(selectedFiles[file]);
     }
   };
 
   // Handle file upload
-  const handleFileUpload = async () => {
+  const handleFileUpload = async (selectedFile: any) => {
     if (!selectedFile) {
       alert("Please select a file first.");
       return;
     }
-
+    console.log(selectedFile.name, selectedFile.type);
     try {
+      setUploadStatus("Uploading...");
+      // console.log(selectedFile);
       // Step 1: Get presigned URL from backend
       const presignedUrlResponse = await fetch(
-        `http://${backend_url}/upload/getPresignedUrl`,
+        `http://${process.env.NEXT_PUBLIC_BACKEND_URL}/upload/getPresignedUrl`,
         {
           method: "POST",
           headers: {
@@ -69,30 +70,32 @@ const UploadCSV = () => {
 
       if (!s3UploadResponse.ok) {
         throw new Error("Failed to upload file to S3");
+      } else {
+        setUploadStatus("Upload complete! File uploaded successfully.");
       }
 
       // Step 3: Notify backend that the upload is complete
-      const notifyBackendResponse = await fetch(
-        `http://${backend_url}/upload/notifyComplete`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fileName: selectedFile.name,
-          }),
-        }
-      );
+      // const notifyBackendResponse = await fetch(
+      //   `http://${process.env.NEXT_PUBLIC_BACKEND_URL}/upload/notifyModel`,
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       fileName: selectedFile.name,
+      //     }),
+      //   }
+      // );
 
-      const notifyBackendResult = await notifyBackendResponse.json();
+      // const notifyBackendResult = await notifyBackendResponse.json();
 
-      if (notifyBackendResponse.ok) {
-        setResultUrl(notifyBackendResult.resultS3Url);
-        setUploadStatus("Upload complete! File processed successfully.");
-      } else {
-        throw new Error("Failed to notify backend");
-      }
+      // if (notifyBackendResponse.ok) {
+      //   setResultUrl(notifyBackendResult.resultS3Url);
+      //   setUploadStatus("Upload complete! File processed successfully.");
+      // } else {
+      //   throw new Error("Failed to notify backend");
+      // }
     } catch (error) {
       console.error("Error uploading file:", error);
       setUploadStatus("Error uploading or processing the file");
@@ -104,7 +107,7 @@ const UploadCSV = () => {
       <h2 className="flex justify-center text-2xl font-bold mb-4 text-gray-800">
         Upload Your CSVs
       </h2>
-      <FileUploadComponent />
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-center justify-center w-full">
           <label
@@ -118,7 +121,7 @@ const UploadCSV = () => {
                 and drop
               </p>
               <p className="text-xs text-gray-500">
-                Multiple CSV files (max. 10MB each)
+                At least 2 CSV files (max. 10MB each)
               </p>
             </div>
             <input
@@ -153,26 +156,26 @@ const UploadCSV = () => {
             </ul>
           </div>
         )}
-        <div className="flex justify-center">
+        <div className="flex flex-col justify-center">
+          {/* <Link className="flex flex-row space-x-2" href={"identify"}> */}
           {uploadStatus && <p>{uploadStatus}</p>}
           {resultUrl && (
             <p>
-              Processed file available at: <a href={resultUrl}>{resultUrl}</a>
+              Processed file available at:
+              <a href={resultUrl}>{resultUrl}</a>
             </p>
           )}
-          <Link className="flex flex-row space-x-2" href={"identify"}>
-            <button
-              onClick={handleFileUpload}
-              disabled={selectedFiles.length == 0}
-              className={`flex flex-row space-x-4  text-white font-medium py-4 px-4 border-b-4  ${
-                selectedFiles.length == 0
-                  ? "bg-orange-200 border-orange-400"
-                  : "hover:border-orange-400 hover:bg-orange-300  border-orange-600 bg-orange-400"
-              } rounded`}
-            >
-              <p>Upload Data</p>
-            </button>
-          </Link>
+          <button
+            disabled={selectedFiles.length < 2}
+            className={`flex flex-row space-x-4  text-white font-medium py-4 px-4 border-b-4 justify-center  ${
+              selectedFiles.length < 2
+                ? "bg-orange-200 border-orange-400"
+                : "hover:border-orange-400 hover:bg-orange-300  border-orange-600 bg-orange-400"
+            } rounded`}
+          >
+            <p>Upload Data</p>
+          </button>
+          {/* </Link> */}
         </div>
       </form>
     </div>
