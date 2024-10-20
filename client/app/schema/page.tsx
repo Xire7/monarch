@@ -5,30 +5,14 @@ import testData from "@/testData.json";
 import Link from "next/link";
 import ConfirmModal from "@/components/ConfirmModal";
 import Prompts from "@/components/Prompts";
+import { issues } from "../data/issues";
 
 const Schema = () => {
-  const [issues, setIssues] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [issueNumber, setIssueNumber] = useState(1);
   const [graph, setGraph] = useState({});
   const [complete, setComplete] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [schemaData, setSchemaData] = useState(null);
-
-  useEffect(() => {
-    const storedData = sessionStorage.getItem('schemaData');
-    if (storedData) {
-      try {
-        const parsedData = JSON.parse(storedData);
-        setIssues(parsedData);
-        setSchemaData(parsedData);
-      } catch (error) {
-        console.error('Error parsing stored data:', error);
-        setIssues([]);
-      }
-    }
-    setLoading(false);
-  }, []);
 
   // temp
   const data = testData;
@@ -97,19 +81,10 @@ const Schema = () => {
   };
 
   useEffect(() => {
-    if (!loading && issues.length > 0) {
-      const newGraph = buildGraph();
-      setGraph(newGraph);
-    }
-  }, [issueNumber, loading, issues]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (issues.length === 0) {
-    return <div>No issues found.</div>;
-  }
+    const newGraph = buildGraph();
+    setGraph(newGraph);
+    setLoading(false);
+  }, [issueNumber, loading]);
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">
@@ -123,11 +98,7 @@ const Schema = () => {
           additionalInfo={issues[issueNumber - 1].additional_info}
         />
       )}
-      {loading ? (
-        <div className="flex items-center justify-center w-full h-full bg-white text-xl font-semibold text-black">
-          Updating...
-        </div>
-      ) : (
+      {!loading && (
         <SchemaVisualizer
           graph={graph}
           recenter={issueNumber - 1 == issues.length}
