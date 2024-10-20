@@ -12,16 +12,17 @@ const s3 = new S3Client({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   }
 });
-export const generatePresignedUrl = async (fileName: string, fileType: string): Promise<string> => {
+export const insertWithPresignedUrl = async (fileName: string, fileType: string): Promise<string> => {
   const params = {
     Bucket: `${process.env.S3_BUCKET_NAME}`,
     Key: fileName,
     ContentType: fileType,
   };
-
+  console.log(`${fileName}, ${fileType},`);
   try {
     const command = new PutObjectCommand(params);
     const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 60 * 5 }); //5 min expiration
+    console.log( `${presignedUrl}`);
     return presignedUrl; //grant user url to upload file
   } catch (error) {
     console.error("Error generating presigned URL:", error);
