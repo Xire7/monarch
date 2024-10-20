@@ -8,6 +8,7 @@ import Prompts from "@/components/Prompts";
 import { issues } from "../data/issues";
 
 const Schema = () => {
+  const [newIssues, setNewIssues] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [issueNumber, setIssueNumber] = useState(1);
   const [graph, setGraph] = useState({});
@@ -16,7 +17,7 @@ const Schema = () => {
 
   // temp
   const data = testData;
-
+  console.log(sessionStorage.getItem("schemeData"));
   const buildGraph = () => {
     setLoading(true);
     const nodes = [];

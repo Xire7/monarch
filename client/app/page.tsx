@@ -9,7 +9,7 @@ import Team from "@/components/Team";
 export default function Home() {
   return (
     <>
-      <div className="bg-gradient-to-b from-orange-50 to-orange-300 h-full w-full ">
+      <div className="bg-gradient-to-b from-orange-50 to-orange-300 w-full min-h-svh ">
         <Navbar />
         <Header />
       </div>

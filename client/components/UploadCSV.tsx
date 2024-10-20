@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Upload, X } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 const UploadCSV = () => {
   const router = useRouter();
@@ -54,20 +54,22 @@ const UploadCSV = () => {
 
       if (!response.ok) {
         console.log("Response not OK. Status Text:", response.statusText);
-        throw new Error(`Failed to fetch presigned result data: ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch presigned result data: ${response.statusText}`
+        );
       }
 
       const data = await response.json();
       console.log("Fetched data:", data);
       setResultData(data);
-      
+
       // Store the data in session storage
-      sessionStorage.setItem('schemaData', JSON.stringify(data));
-      
+      sessionStorage.setItem("schemaData", JSON.stringify(data));
+
       // Redirect to the schema page
-      router.push('/schema');
+      router.push("/schema");
     } catch (error) {
-      console.error('Error fetching result data:', error);
+      console.error("Error fetching result data:", error);
     }
   };
 
@@ -142,18 +144,28 @@ const UploadCSV = () => {
           }),
         }
       );
-  
+
       if (!readyToNotify.includes(false)) {
         const notifyBackendResult = await notifyBackendResponse.json();
-        
+
         if (notifyBackendResponse.ok) {
-          console.log("Notify backend successful. Result:", notifyBackendResult);
+          console.log(
+            "Notify backend successful. Result:",
+            notifyBackendResult
+          );
           setResultUrl(notifyBackendResult.presignedUrl);
-          setUploadStatus("File processed successfully. Fetching result data...");
+          setUploadStatus(
+            "File processed successfully. Fetching result data..."
+          );
           await fetchResultData(notifyBackendResult.presignedUrl);
         } else {
-          console.error("Notify backend failed. Status:", notifyBackendResponse.status);
-          throw new Error(`Failed to notify backend: ${notifyBackendResponse.statusText}`);
+          console.error(
+            "Notify backend failed. Status:",
+            notifyBackendResponse.status
+          );
+          throw new Error(
+            `Failed to notify backend: ${notifyBackendResponse.statusText}`
+          );
         }
       } else {
         console.warn("Not all files are ready to notify.");
@@ -224,7 +236,7 @@ const UploadCSV = () => {
               className="mt-2 mb-6 bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 rounded-sm"
               role="alert"
             >
-              <p className="font-bold">Alert</p>
+              <p className="font-bold">Status</p>
               <p>{uploadStatus}</p>
             </div>
           )}

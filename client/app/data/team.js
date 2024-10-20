@@ -8,7 +8,7 @@ export const team = [
   {
     name: "Zion Mateo",
     role: "Backend Engineer",
-    image: "/assets/monarch_butterflies.png",
+    image: "/assets/zionmateo.jpg",
     linkedin: "https://www.linkedin.com/in/zionmateo/",
   },
   {
