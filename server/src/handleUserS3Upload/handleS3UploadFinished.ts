@@ -1,17 +1,18 @@
 import axios from 'axios';
+import { json } from 'stream/consumers';
 
-export const handleUserS3Upload = async (fileName: string) => {
-    const s3ObjectUrl = 'https://${process.env.S3_BUCKET_NAME}-data.s3.us-west-1.amazonaws.com/${fileName}';
+export const handleUserS3Upload = async (fileNames: string[]) => {
+    if (fileNames.length == 0) return {success:false} //fail if empty
     //file has been uploaded by client
     try {
         //notify model to process file
-        const response = await axios.post('http://${process.env.MODEL_SERVER}:80/process-file', {
-            s3ObjectUrl: s3ObjectUrl,
+        const response = await axios.post(`http://${process.env.MODEL_SERVER}:${process.env.MODEL_SERVER_PORT}/processFiles`, {
+            s3ResultObjectName: fileNames,
         }); //get result URL from model after processing/upload
-        const resultS3Url = response.data.resultS3Url
-        console.log(`Model to process file ${s3ObjectUrl}`);
-
-        return { success: true, resultS3Url }; //return s3 url
+        const s3ResultObjectName = response.data.s3ResultObjectName
+        console.log(`Model to process files ${fileNames}`);
+        const resultS3Object = `https://${process.env.S3_BUCKET_NAME}-data.s3.us-west-1.amazonaws.com/${s3ResultObjectName}`;
+        return { success: true, resultS3Object }; //return s3 object
     } catch (error) {
         console.error('Error notifying or retrieving from model:', error);
         throw new Error('Error notifying or retrieving from model');

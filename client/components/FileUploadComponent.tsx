@@ -23,10 +23,9 @@ const FileUploadComponent: React.FC = () => {
 
     try {
       setUploadStatus("Uploading...");
-
       // Step 1: Get presigned URL from backend
       const presignedUrlResponse = await fetch(
-        `http://${process.env.BACKEND_URL}/upload/getPresignedUrl`,
+        `http://${process.env.NEXT_PUBLIC_BACKEND_URL}/upload/getPresignedUrl`,
         {
           method: "POST",
           headers: {
@@ -56,7 +55,7 @@ const FileUploadComponent: React.FC = () => {
 
       // Step 3: Notify backend that the upload is complete
       const notifyBackendResponse = await fetch(
-        `http://${process.env.BACKEND_URL}/upload/notifyComplete`,
+        `http://${process.env.NEXT_PUBLIC_BACKEND_URL}/upload/notifyComplete`,
         {
           method: "POST",
           headers: {
