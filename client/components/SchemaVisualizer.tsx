@@ -21,6 +21,7 @@ import SchemaNode from "./SchemaNode";
 import Link from "next/link";
 import Image from "next/image";
 import monarch_logo from "../public/assets/monarch logo.svg";
+import ConfirmModal from "./ConfirmModal";
 
 const nodeTypes = {
   custom: SchemaNode,
@@ -73,7 +74,7 @@ const LayoutFlow = (props: { initialNodes: any; initialEdges: any }) => {
   }, [loading]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-screen h-screen animate-fadeup">
+    <div className="flex flex-col items-center justify-center w-screen h-screen animate-fadeup ">
       <div className="fixed top-4 left-4 z-40 bg-transparent">
         <p className="text-2xl font-semibold">Monarch</p>
       </div>
@@ -98,18 +99,6 @@ const LayoutFlow = (props: { initialNodes: any; initialEdges: any }) => {
           </button>
         </Panel>
       </ReactFlow>
-      <div className="fixed bottom-8 space-x-8">
-        <button className="bg-orange-400 hover:bg-orange-300 text-white font-bold border-b-4 border-orange-600 hover:border-orange-400 rounded-xl hover:scale-125 transition-transform duration-300">
-          <Link href={"schema"}>
-            <p className="text-xl font-medium p-6">Download CSV</p>
-          </Link>
-        </button>
-        <button className="bg-neutral-100 hover:bg-neutral-200 text-black font-medium border-b-4 border-neutral-400 hover:border-neutral-400 rounded-xl hover:scale-125 transition-transform duration-300">
-          <Link href={"/"}>
-            <p className="text-xl font-medium p-6">Return Home</p>
-          </Link>
-        </button>
-      </div>
     </div>
   );
 };
