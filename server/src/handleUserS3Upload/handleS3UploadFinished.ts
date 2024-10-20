@@ -2,6 +2,8 @@ import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import axios from 'axios';
 import { json } from 'stream/consumers';
+import dotenv from 'dotenv';
+dotenv.config();
 const s3 = new S3Client({
     region: 'us-west-1',
     credentials: {
@@ -19,13 +21,14 @@ export const handleUserS3Upload = async (fileNames: string[]) => {
         const response = await axios.post(`http://${process.env.MODEL_SERVER}:${process.env.MODEL_SERVER_PORT}/process-files`, {
             fileNames: fileNames,
         }); //get result fileName from model after processing/upload
-        const s3ResultObjectName = response.data.s3ResultObjectName
+        const s3ResultObjectName = response.data
+        console.log(s3ResultObjectName);
         const params = {
-            Bucket: `${process.env.S3_BUCKET_NAME}`,
+            Bucket: `${process.env.S3_RESULT_BUCKET_NAME}`,
             Key: s3ResultObjectName,
           };
         const command = new GetObjectCommand(params);
-        const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 60 * 10 }); // 10 minutes expiry
+        const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 60 * 30 }); // 10 minutes expiry
         //create a presigned url for user
 
         return { success: true, presignedUrl }; //return s3 object

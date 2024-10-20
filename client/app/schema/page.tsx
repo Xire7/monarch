@@ -13,6 +13,14 @@ const Schema = () => {
   const [graph, setGraph] = useState({});
   const [complete, setComplete] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [schemaData, setSchemaData] = useState(null);
+
+  useEffect(() => {
+    const storedData = sessionStorage.getItem("schemaData");
+    if (storedData) {
+      setSchemaData(JSON.parse(storedData));
+    }
+  }, []);
 
   // temp
   const data = testData;
