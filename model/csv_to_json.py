@@ -18,8 +18,7 @@ def csvsToJson(files):
     for fileName in files:
         dataset = datasetCsvToJson(fileName)
         datasets.append(dataset)
-    with open('output.json', 'w') as jsonFile:
-        json.dump(datasets, jsonFile, indent=2)
+    return json.dumps(datasets, indent=2)
 
 if __name__ == '__main__':
     print("Current working directory:", os.getcwd())

@@ -292,10 +292,13 @@ def matchmaker(match, dfs):
         if match in dfs[df].columns:
             return dfs[df][match]
         
-def enchain(match):
+def enchain(match, dfs):
     res = ''
     for m in match:
         res += '/' + m
+        for df in dfs:
+            if m in dfs[df].columns:
+                res += '|' + df
 
     return res
 
@@ -330,46 +333,92 @@ def gen_issues(jdfs):
         
         df = pd.DataFrame(cols).T
 
-        issues['merges'][enchain(c_mt)] = {'name_similarity': True}
+        issues['merges'][enchain(c_mt, dfs)] = {'name_similarity': True}
 
         # weighted euclid for all
         eu_fts = get_cols_fts(df)
         eu_sim = calc_euclid_sim(df, eu_fts)
-        issues['merges'][enchain(c_mt)]['distribution_similarity'] = bool(all(value > 0.70 for value in eu_sim.values()))
+        issues['merges'][enchain(c_mt, dfs)]['distribution_similarity'] = bool(all(value > 0.70 for value in eu_sim.values()))
 
         # spearman for numerics
         if all(pd.api.types.is_numeric_dtype(df[column]) for column in df.columns):
             sprmn_df = process_nested_structure(df, tuple(c_mt))
             sprmn_mtrx = calc_sprmn(sprmn_df)
-            issues['merges'][enchain(c_mt)]['spearman_similarity'] = bool((sprmn_mtrx >= .50).all().all())
+            issues['merges'][enchain(c_mt, dfs)]['spearman_similarity'] = bool((sprmn_mtrx >= .50).all().all())
         else:
-            issues['merges'][enchain(c_mt)]['spearman_similarity'] = False
+            issues['merges'][enchain(c_mt, dfs)]['spearman_similarity'] = False
         
         # lsa for really large large texts
         if all(pd.api.types.is_string_dtype(df[column]) for column in df.columns) and len(c_mt) == 2:
             try:
-                issues['merges'][enchain(c_mt)]['lsa_similarity'] = bool(calc_lsa(df[df.columns[0]], df[df.columns[1]]) > 0.45)
+                issues['merges'][enchain(c_mt, dfs)]['lsa_similarity'] = bool(calc_lsa(df[df.columns[0]], df[df.columns[1]]) > 0.45)
             except:
-                issues['merges'][enchain(c_mt)]['lsa_similarity'] = False
+                issues['merges'][enchain(c_mt, dfs)]['lsa_similarity'] = False
         else:
-            issues['merges'][enchain(c_mt)]['lsa_similarity'] = False
+            issues['merges'][enchain(c_mt, dfs)]['lsa_similarity'] = False
 
         # fuzzy for general texts
         if all(pd.api.types.is_string_dtype(df[column]) for column in df.columns):
             fuzz_df = flatten_str_strct(df, tuple(c_mt))
             fuzzy_sims = calc_fuzzy_sims(fuzz_df, fuzz_df.columns)
-            issues['merges'][enchain(c_mt)]['fuzzy_similarity'] = bool(any(value > 0.60 for value in fuzzy_sims.values()))
+            issues['merges'][enchain(c_mt, dfs)]['fuzzy_similarity'] = bool(any(value > 0.60 for value in fuzzy_sims.values()))
         else:
-            issues['merges'][enchain(c_mt)]['fuzzy_similarity'] = False
+            issues['merges'][enchain(c_mt, dfs)]['fuzzy_similarity'] = False
 
     # return json.dumps(issues)
     return issues
 
+x = '''
+[
+  {
+    "name": "dataset1",
+    "cols": ["full_name", "birth_year", "profession", "annual_income", "city"],
+    "rows": [
+      ["John Smith", 1985, "Software Engineer", 95000, "San Francisco"],
+      ["Emma Johnson", 1990, "Data Analyst", 75000, "New York"],
+      ["Michael Brown", 1988, "Product Manager", 110000, "Seattle"]
+    ]
+  },
+  {
+    "name": "dataset2",
+    "cols": ["employee", "age", "job_title", "salary", "location"],
+    "rows": [
+      ["Sarah Davis", 32, "UX Designer", 85000, "Los Angeles"],
+      ["Robert Wilson", 28, "Software Developer", 90000, "Austin"],
+      ["Lisa Thompson", 35, "Marketing Manager", 95000, "Chicago"]
+    ]
+  }
+]
+ '''
+
+print(gen_issues(x))
+
 def buff_issues(issues):
+    jissues = json.dumps(issues)
+    
+    completion = groqcl.chat.completions.create(
+        model="llama3-70b-8192",
+        messages= [
+            {
+                "role": "system",
+                "content": ''
+            },
+            {
+                "role": "user",
+                "content": ''
+            }
+        ],
+        temperature=1,
+        max_tokens=1024,
+        top_p=1,
+        stream=True,
+        stop=None,
+    )
+
+    return
+
+def serve_report():
     pass
 
-def send_initial_report():
-    pass
-
-def send_modified_data():
+def serve_mod_data():
     pass
