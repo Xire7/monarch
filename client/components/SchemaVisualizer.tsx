@@ -69,7 +69,7 @@ const LayoutFlow = (props: {
 
   useEffect(() => {
     onLayout();
-  }, [loading, props.recenter]);
+  }, [loading, props.recenter, props.issueNumber]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full animate-fadeup">
@@ -91,23 +91,15 @@ const LayoutFlow = (props: {
 };
 
 const SchemaVisualizer = (props: {
-  buildGraph: any;
+  graph: any;
   recenter: boolean;
   issueNumber: number;
 }) => {
-  const [graph, setGraph] = useState(props.buildGraph());
-
-  useEffect(() => {
-    setGraph(props.buildGraph());
-    console.log(props.issueNumber, "so updated");
-    console.log(graph);
-  }, [props.issueNumber]);
-
   return (
     <ReactFlowProvider>
       <LayoutFlow
-        initialNodes={graph.nodes}
-        initialEdges={graph.edges}
+        initialNodes={props.graph.nodes}
+        initialEdges={props.graph.edges}
         recenter={props.recenter}
         issueNumber={props.issueNumber}
       />

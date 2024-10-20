@@ -10,7 +10,7 @@ const SchemaNode = (props: { data: any }) => {
     <div
       className={`flex px-4 py-2 shadow-lg rounded-2xl hover:scale-125 transition-transform duration-300  hover:border-2 hover:border-slate-500 ${
         props.data.root ? "bg-purple-100" : "bg-orange-50"
-      } `}
+      } ${props.data.used ? "border-4 border-purple-500 scale-125" : ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -20,8 +20,6 @@ const SchemaNode = (props: { data: any }) => {
       >
         <div className="flex flex-col">
           <div className="text-lg font-bold">{props.data.name}</div>
-
-          {props.data.used && <div className="text-lg font-bold">USED</div>}
 
           {isOpen && !props.data.root && (
             <div className="py-4">

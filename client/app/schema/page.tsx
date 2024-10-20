@@ -10,12 +10,15 @@ import { issues } from "../data/issues";
 const Schema = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [issueNumber, setIssueNumber] = useState(1);
+  const [graph, setGraph] = useState({});
   const [complete, setComplete] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // temp
   const data = testData;
 
   const buildGraph = () => {
+    setLoading(true);
     const nodes = [];
     const edges = [];
 
@@ -65,6 +68,7 @@ const Schema = () => {
         edges.push(newEdge);
       }
     }
+
     return { nodes, edges };
   };
 
@@ -76,10 +80,17 @@ const Schema = () => {
     }
   };
 
+  useEffect(() => {
+    const newGraph = buildGraph();
+    setGraph(newGraph);
+    setLoading(false);
+  }, [issueNumber, loading]);
+
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       {!complete && (
         <Prompts
+          buildGraph={buildGraph}
           updateIssueNumber={updateIssueNumber}
           issueNumber={issueNumber}
           issuesCount={issues.length}
@@ -87,12 +98,13 @@ const Schema = () => {
           additionalInfo={issues[issueNumber - 1].additional_info}
         />
       )}
-
-      <SchemaVisualizer
-        buildGraph={buildGraph}
-        recenter={issueNumber - 1 == issues.length}
-        issueNumber={issueNumber}
-      />
+      {!loading && (
+        <SchemaVisualizer
+          graph={graph}
+          recenter={issueNumber - 1 == issues.length}
+          issueNumber={issueNumber}
+        />
+      )}
 
       {isOpen && (
         <ConfirmModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
