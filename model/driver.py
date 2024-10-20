@@ -376,7 +376,7 @@ def buff_issues(issues):
         messages=[
             {
                 "role": "system",
-                "content": "You are an interpreter that takes a JSON object, which represents issues across multiple datasets - which we are attempting to merge - that can be addressed. You will output a list of JSON objects, in string format, with messages about the dataset. Expect input to be provided in the following format provided below:\n[\n\t{\n\t\t'nvals': {'dataset1': False, 'dataset2': False},\n\t\t'ucols': ['maiden_name'],\n\t\t'merges': {\n\t\t\t'/name|dataset1/employee|dataset2/full_name/dataset3' : {'name_similarity': True, 'distribution_similarity': True, 'spearman_similarity': False, 'lsa_similarity': True, 'fuzzy_similarity': True},\n\t\t\t'/birth_year|dataset1/age|dataset2/birth_date/dataset3': {'name_similarity': True, 'distribution_similarity': False, 'spearman_similarity': False, 'lsa_similarity': False, 'fuzzy_similarity': False}\n\t\t}\n\t}\n]\n\nHere is what each of the fields in this input JSON mean. Starting from the top, the \"nvals\" field stores a dictionary that maps the name of the datasets to either True or False. If True, the dataset in question has missing or NULL values. If False, the dataset does not have any NULL values. The first \"message\" that you should return in your output JSON should always be a message about the null values within the datasets. It should contain no additional information (see format below).\n\nThe next field, \"ucols\" field stores a list of columns that were not matched, in other words, they have no related columns across the other datasets. As such, we want to message the user about removing these columns. Therefore, your second message should always be a message about the columns that don't seem to be relevant. It should contain no additional information. If there are no \"ucols,\" simply state this as the message: \"There are no null values in your data.\"\n\nThe field following that is \"merges\", which stores all the possible merges that the user could do on their data. It stores a dictionary that maps a string to another dictionary of similarity scores.\n\nStarting with the string, the word after each forward slash (/) is the name of the column (eg \"city\"). The word after the pipe symbol (|) immediately following it is the name of the dataset that column is from (eg \"workers\") - this would be /city|workers. And so on for the rest of the string. Please extract these column names when outputting! Do not include the delimiters, use the column names. These represent the columns to be merged and the datasets they originate from.\n\nThe following dictionary maps a variety of similarity scores to True or False. The boolean values here simply measure whether or not the columns scored highly when compared via those scores. The name_score is always true. Do not mention it in additional information. The distribution score is only for both numeric and non-numeric scores - it measures the shape of the data. The spearman similarity is only for numeric data. The lsa and fuzzy similarity scores are only for non-numeric, string data. Refer to LSA as semantic similarities and fuzzy as syntactical similarities.\n\nThe last field is \"cols_used.\" In this case, just directly dump the names of the parsed columns into this list. This is just for reference later.\n\nYou are to store the messages in the format down below. The main part, \"msg\" should simply be whether or not the columns are similar. It should not include why. Only that they are. As long as one of the scores is \"True,\" they are. The \"addl_info\" or additional information columns are where you should describe the other scores that perform well (True on the similarity values in the JSON) and those that don't (False on the similarity values in the JSON), be specific and emphasize. The additional information should be 1-2 sentences at most.\n\nHere is the expected output format:\n[\n\t{\n\t\t'message': \"Insert your insight here: (e.g. 'Column A and column B can be merged.')\",\n\t\t'additional_info': \"Insert additional info about the mergeable datasets here: (e.g. 'Column A and column B had high semantic and syntactical similarity scores.')\",\n        'cols_used': [\"Column A\", \"Column B\"]\n\t}\n]\n\nPlease have diverse and flavorful text in both the messages and the additional info. Have each additional info field be unique! Don't use the same pattern for every additional info. Only include the JSON output."
+                "content": "You are an interpreter that takes a JSON object, which represents issues across multiple datasets - which we are attempting to merge - that can be addressed. You will output a list of JSON objects, in string format, with messages about the dataset. Expect input to be provided in the following format provided below:\n[\n\t{\n\t\t'nvals': {'dataset1': False, 'dataset2': False},\n\t\t'ucols': ['maiden_name'],\n\t\t'merges': {\n\t\t\t'/name|dataset1/employee|dataset2/full_name/dataset3' : {'name_similarity': True, 'distribution_similarity': True, 'spearman_similarity': False, 'lsa_similarity': True, 'fuzzy_similarity': True},\n\t\t\t'/birth_year|dataset1/age|dataset2/birth_date/dataset3': {'name_similarity': True, 'distribution_similarity': False, 'spearman_similarity': False, 'lsa_similarity': False, 'fuzzy_similarity': False}\n\t\t}\n\t}\n]\n\nHere is what each of the fields in this input JSON mean. Starting from the top, the \"nvals\" field stores a dictionary that maps the name of the datasets to either True or False. If True, the dataset in question has missing or NULL values. If False, the dataset does not have any NULL values. The first \"message\" that you should return in your output JSON should always be a message about the null values within the datasets. It should contain no additional information (see format below).\n\nThe next field, \"ucols\" field stores a list of columns that were not matched, in other words, they have no related columns across the other datasets. As such, we want to message the user about removing these columns. Therefore, your second message should always be a message about the columns that don't seem to be relevant. It should contain no additional information. If there are no \"ucols,\" simply state this as the message: \"There are no null values in your data.\"\n\nThe field following that is \"merges\", which stores all the possible merges that the user could do on their data. It stores a dictionary that maps a string to another dictionary of similarity scores.\n\nStarting with the string, the word after each forward slash (/) is the name of the column (eg \"city\"). The word after the pipe symbol (|) immediately following it is the name of the dataset that column is from (eg \"workers\") - this would be /city|workers. And so on for the rest of the string. Please extract these column names when outputting! Do not include the delimiters, use the column names. These represent the columns to be merged and the datasets they originate from. Do NOT mention any messages concerning how matches cannot be made.\n\nThe following dictionary maps a variety of similarity scores to True or False. The boolean values here simply measure whether or not the columns scored highly when compared via those scores. The name_score is always true. Do not mention it in additional information. The distribution score is only for both numeric and non-numeric scores - it measures the shape of the data. The spearman similarity is only for numeric data. The lsa and fuzzy similarity scores are only for non-numeric, string data. Refer to LSA as semantic similarities and fuzzy as syntactical similarities.\n\nThe last field is \"cols_used.\" In this case, just directly dump the names of the parsed columns into this list. This is just for reference later.\n\nYou are to store the messages in the format down below. The main part, \"msg\" should simply be whether or not the columns are similar. It should not include why. Only that they are. As long as one of the scores is \"True,\" they are. The \"addl_info\" or additional information columns are where you should describe the other scores that perform well (True on the similarity values in the JSON) and those that don't (False on the similarity values in the JSON), be specific and emphasize. The additional information should be 1-2 sentences at most.\n\nHere is the expected output format:\n[\n\t{\n\t\t'message': \"Insert your insight here: (e.g. 'Column A and column B can be merged.')\",\n\t\t'additional_info': \"Insert additional info about the mergeable datasets here: (e.g. 'Column A and column B had high semantic and syntactical similarity scores.')\",\n        'cols_used': [\"Column A\", \"Column B\"]\n\t}\n]\n\nPlease have diverse and flavorful text in both the messages and the additional info. Have each additional info field be unique! Don't use the same pattern for every additional info. Only include the JSON output."
             },
             {
                 "role": "user",
@@ -402,6 +402,68 @@ def serve_report(jdfs):
     bfe_mtrx = buff_issues(ise_mtrx)
 
     return bfe_mtrx
+    
+
+x = '''
+[
+  {
+    "name": "dataset1",
+    "cols": ["full_name", "birth_year", "profession", "annual_income", "city"],
+    "rows": [
+      ["John Smith", 1985, "Software Engineer", 95000, "San Francisco"],
+      ["Emma Johnson", 1990, "Data Analyst", 75000, "New York"],
+      ["Michael Brown", 1988, "Product Manager", 110000, "Seattle"]
+    ]
+  },
+  {
+    "name": "dataset2",
+    "cols": ["employee", "age", "job_title", "salary", "location"],
+    "rows": [
+      ["Sarah Davis", 32, "UX Designer", 85000, "Los Angeles"],
+      ["Robert Wilson", 28, "Software Developer", 90000, "Austin"],
+      ["Lisa Thompson", 35, "Marketing Manager", 95000, "Chicago"]
+    ]
+  },
+  {
+    "name": "dataset3",
+    "cols": ["name", "birth_date", "occupation", "longitude", "latitude"],
+    "rows": [
+      ["Alex Turner", "1992-05-15", "Graphic Designer", -122.4194, 37.7749],
+      ["Olivia Martinez", "1987-11-22", "Financial Analyst", -74.0060, 40.7128],
+      ["Daniel Lee", "1995-03-08", "Software Engineer", -122.3321, 50]
+    ]
+  }
+]
+'''
+
+def solve(jmsg, jdfs):
+    dfs = unjsonify(jdfs)
+    completion = groqcl.chat.completions.create(
+        model="llama3-70b-8192",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a simple respondent. If the message attached has to do with a lack of null values, respond with 'nval'. If it has to do with unnecessary, unmatched, or unrelated columns, respond with 'ucols'. Otherwise, respond with 'merge'. That will be the first part of your tuple that you respond with. The second part will be a list of the columns that were mentioned. Respond in this format: ('type', ['col1', 'col2']). Do not say anything else."
+            },
+            {
+                "role": "user",
+                "content": jmsg      
+            }
+        ]
+    )
+
+    ans = eval(completion.choices[0].message.content)
+
+    if ans[0] == 'nval':
+        dfs = cull_nulls(dfs)
+    elif ans[0] == 'ucols':
+        dfs = cull_unmatch(dfs, ans[1])
+    elif ans[0] == 'merge':
+        primary = ans[1][0]
+
+        
+
+    return dfs
 
 def serve_mod_data():
     pass
