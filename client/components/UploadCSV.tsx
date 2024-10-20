@@ -129,36 +129,37 @@ const UploadCSV = () => {
   };
 
   const notifyModel = async () => {
-    // Step 3: Notify backend that the upload is complete
-    const notifyBackendResponse = await fetch(
-      `http://${process.env.NEXT_PUBLIC_BACKEND_URL}/upload/notifyModel`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fileNames: getFileNames(),
-        }),
-      }
-    );
-
-    if (!readyToNotify.includes(false)) {
-      const notifyBackendResult = await notifyBackendResponse.json(); // found
-      
-      try {
-        if (notifyBackendResponse.ok) {
-          setResultUrl(notifyBackendResult.presignedUrl);
-          setUploadStatus("File processed successfully.");
-          fetchResultData(notifyBackendResult.presignedUrl);
-        } else {
-          throw new Error("Failed to notify backend");
+    try {
+      const notifyBackendResponse = await fetch(
+        `http://${process.env.NEXT_PUBLIC_BACKEND_URL}/upload/notifyModel`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fileNames: getFileNames(),
+          }),
         }
-      } catch (error) {
-        console.error("Error notifying backend:", error);
-        setUploadStatus("Error notifying backend");
+      );
+  
+      if (!readyToNotify.includes(false)) {
+        const notifyBackendResult = await notifyBackendResponse.json();
+        
+        if (notifyBackendResponse.ok) {
+          console.log("Notify backend successful. Result:", notifyBackendResult);
+          setResultUrl(notifyBackendResult.presignedUrl);
+          setUploadStatus("File processed successfully. Fetching result data...");
+          await fetchResultData(notifyBackendResult.presignedUrl);
+        } else {
+          console.error("Notify backend failed. Status:", notifyBackendResponse.status);
+          throw new Error(`Failed to notify backend: ${notifyBackendResponse.statusText}`);
+        }
+      } else {
+        console.warn("Not all files are ready to notify.");
       }
-
+    } catch (error) {
+      console.error("Error in notifyModel:", error);
     }
   };
 

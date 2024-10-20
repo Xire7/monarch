@@ -5,9 +5,9 @@ import testData from "@/testData.json";
 import Link from "next/link";
 import ConfirmModal from "@/components/ConfirmModal";
 import Prompts from "@/components/Prompts";
-import { issues } from "../data/issues";
 
 const Schema = () => {
+  const [issues, setIssues] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [issueNumber, setIssueNumber] = useState(1);
   const [graph, setGraph] = useState({});
@@ -16,10 +16,18 @@ const Schema = () => {
   const [schemaData, setSchemaData] = useState(null);
 
   useEffect(() => {
-    const storedData = sessionStorage.getItem("schemaData");
+    const storedData = sessionStorage.getItem('schemaData');
     if (storedData) {
-      setSchemaData(JSON.parse(storedData));
+      try {
+        const parsedData = JSON.parse(storedData);
+        setIssues(parsedData);
+        setSchemaData(parsedData);
+      } catch (error) {
+        console.error('Error parsing stored data:', error);
+        setIssues([]);
+      }
     }
+    setLoading(false);
   }, []);
 
   // temp
@@ -89,10 +97,19 @@ const Schema = () => {
   };
 
   useEffect(() => {
-    const newGraph = buildGraph();
-    setGraph(newGraph);
-    setLoading(false);
-  }, [issueNumber, loading]);
+    if (!loading && issues.length > 0) {
+      const newGraph = buildGraph();
+      setGraph(newGraph);
+    }
+  }, [issueNumber, loading, issues]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (issues.length === 0) {
+    return <div>No issues found.</div>;
+  }
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">
