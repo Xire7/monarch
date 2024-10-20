@@ -5,7 +5,7 @@ export const handleUserS3Upload = async (fileName: string) => {
     //file has been uploaded by client
     try {
         //notify model to process file
-        const response = await axios.post('http://50.18.2.180:80/process-file', {
+        const response = await axios.post('http://${process.env.MODEL_SERVER}:80/process-file', {
             s3ObjectUrl: s3ObjectUrl,
         }); //get result URL from model after processing/upload
         const resultS3Url = response.data.resultS3Url

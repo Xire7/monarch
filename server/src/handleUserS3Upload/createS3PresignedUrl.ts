@@ -12,7 +12,7 @@ const s3 = new S3Client({
 });
 export const generatePresignedUrl = async (fileName: string, fileType: string): Promise<string> => {
   const params = {
-    Bucket: '{process.env.S3_BUCKET_NAME}',
+    Bucket: `${process.env.S3_BUCKET_NAME}`,
     Key: fileName,
     ContentType: fileType,
   };
