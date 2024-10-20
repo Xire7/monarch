@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { CornerRightDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { CornerRightDown } from "lucide-react";
 import Issue from "@/components/Issue";
 
 const Identify = () => {
@@ -43,6 +43,7 @@ const Identify = () => {
       {issues.map((issue, index) => (
         <Issue description={issue} number={index + 1} total={issues.length} />
       ))}
+
       <div className="flex flex-row fixed bottom-8 right-8 text-white space-x-8">
         <p>
           [ {Math.round((scrollPosition / maxScrollY) * issues.length)} /{" "}
