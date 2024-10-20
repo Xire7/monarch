@@ -106,7 +106,11 @@ const Schema = () => {
           additionalInfo={issues[issueNumber - 1].additional_info}
         />
       )}
-      {!loading && (
+      {loading ? (
+        <div className="flex items-center justify-center w-full h-full bg-white text-xl font-semibold text-black">
+          Updating...
+        </div>
+      ) : (
         <SchemaVisualizer
           graph={graph}
           recenter={issueNumber - 1 == issues.length}
