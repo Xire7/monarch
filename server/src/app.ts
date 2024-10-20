@@ -1,9 +1,12 @@
 import express from 'express';
-import fileUpload from './routes/upload/fileUpload'
+
 import dotenv from 'dotenv'
 dotenv.config()
 import cors from 'cors'
 import { v4 as uuidv4 } from 'uuid';
+
+import fileUpload from './routes/upload/fileUpload'
+import chatWithModel from './routes/model/chatWithModel'
 const app = express();
 const sessionFiles: { [sessionId: string]: string[] } = {};
 app.use(cors({
@@ -26,6 +29,7 @@ app.get('/', (req, res) => {
   res.send('Hello from your Node.js server!');
 });
 app.use('/', fileUpload);
+app.use('/', chatWithModel);
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
