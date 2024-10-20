@@ -13,7 +13,6 @@ load_dotenv()
 
 GROQ_API_KEY = os.getenv('groq_api_key')
 
-
 # utilizing Groq and Llama for fast inferences
 # utilizing LSA, SVD, NLP, nltk, cosine similarity
 # utilizing Spearman coefficients and distributions similarity
