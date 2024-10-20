@@ -8,6 +8,15 @@ const UploadCSV = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadStatus, setUploadStatus] = useState<string>("");
   const [resultUrl, setResultUrl] = useState<string>("");
+  const [readyToNotify, setReadyToNotify] = useState<boolean[]>([]);
+
+  const getFileNames = () => {
+    var fileNames = [];
+    for (var file in selectedFiles) {
+      fileNames.push(selectedFiles[file].name);
+    }
+    return fileNames;
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -27,20 +36,24 @@ const UploadCSV = () => {
     // Handle the submission of multiple files here
     console.log("Submitting files:", selectedFiles);
     // You would typically send these files to your server or process them here
-    for (var file in selectedFiles) {
-      handleFileUpload(selectedFiles[file]);
+    for (var i = 0; i < selectedFiles.length; ++i) {
+      handleFileUpload(selectedFiles[i], i);
     }
+    notifyModel();
   };
 
   // Handle file upload
-  const handleFileUpload = async (selectedFile: any) => {
+  const handleFileUpload = async (selectedFile: any, number: number) => {
     if (!selectedFile) {
       alert("Please select a file first.");
       return;
     }
-    console.log(selectedFile.name, selectedFile.type);
     try {
       setUploadStatus("Uploading...");
+      setReadyToNotify((prev) => {
+        return [...prev, false];
+      });
+
       // console.log(selectedFile);
       // Step 1: Get presigned URL from backend
       const presignedUrlResponse = await fetch(
@@ -71,39 +84,50 @@ const UploadCSV = () => {
       if (!s3UploadResponse.ok) {
         throw new Error("Failed to upload file to S3");
       } else {
-        setUploadStatus("Upload complete! File uploaded successfully.");
+        setUploadStatus(
+          "Upload complete! File uploaded successfully. Now processing..."
+        );
+        setReadyToNotify((prev) => {
+          let newNotify = prev;
+          newNotify[number] = true;
+          return newNotify;
+        });
       }
-
-      // Step 3: Notify backend that the upload is complete
-      // const notifyBackendResponse = await fetch(
-      //   `http://${process.env.NEXT_PUBLIC_BACKEND_URL}/upload/notifyModel`,
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({
-      //       fileName: selectedFile.name,
-      //     }),
-      //   }
-      // );
-
-      // const notifyBackendResult = await notifyBackendResponse.json();
-
-      // if (notifyBackendResponse.ok) {
-      //   setResultUrl(notifyBackendResult.resultS3Url);
-      //   setUploadStatus("Upload complete! File processed successfully.");
-      // } else {
-      //   throw new Error("Failed to notify backend");
-      // }
     } catch (error) {
       console.error("Error uploading file:", error);
-      setUploadStatus("Error uploading or processing the file");
+      setUploadStatus("Error processing the file");
+    }
+  };
+
+  const notifyModel = async () => {
+    // Step 3: Notify backend that the upload is complete
+    const notifyBackendResponse = await fetch(
+      `http://${process.env.NEXT_PUBLIC_BACKEND_URL}/upload/notifyModel`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fileNames: getFileNames(),
+        }),
+      }
+    );
+
+    if (!readyToNotify.includes(false)) {
+      const notifyBackendResult = await notifyBackendResponse.json();
+
+      if (notifyBackendResponse.ok) {
+        setResultUrl(notifyBackendResult.presignedUrl);
+        setUploadStatus("File processed successfully.");
+      } else {
+        throw new Error("Failed to notify backend");
+      }
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-8 max-w-md mx-auto ">
+    <div className="bg-white rounded-lg shadow-md p-8 max-w-md mx-auto">
       <h2 className="flex justify-center text-2xl font-bold mb-4 text-gray-800">
         Upload Your CSVs
       </h2>
@@ -158,7 +182,15 @@ const UploadCSV = () => {
         )}
         <div className="flex flex-col justify-center">
           {/* <Link className="flex flex-row space-x-2" href={"identify"}> */}
-          {uploadStatus && <p>{uploadStatus}</p>}
+          {uploadStatus && (
+            <div
+              className="mt-2 mb-6 bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 rounded-sm"
+              role="alert"
+            >
+              <p className="font-bold">Alert</p>
+              <p>{uploadStatus}</p>
+            </div>
+          )}
           {resultUrl && (
             <p>
               Processed file available at:

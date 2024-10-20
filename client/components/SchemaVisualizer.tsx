@@ -1,8 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-
 import Dagre from "@dagrejs/dagre";
-
 import {
   ReactFlow,
   MiniMap,
@@ -13,15 +11,10 @@ import {
   useEdgesState,
   useReactFlow,
   ReactFlowProvider,
-  Panel,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
 import SchemaNode from "./SchemaNode";
-import Link from "next/link";
-import Image from "next/image";
-import monarch_logo from "../public/assets/monarch logo.svg";
-import ConfirmModal from "./ConfirmModal";
 
 const nodeTypes = {
   custom: SchemaNode,
@@ -52,7 +45,12 @@ const getLayout = (nodes: any, edges: any) => {
   };
 };
 
-const LayoutFlow = (props: { initialNodes: any; initialEdges: any }) => {
+const LayoutFlow = (props: {
+  initialNodes: any;
+  initialEdges: any;
+  recenter: boolean;
+  issueNumber: number;
+}) => {
   const { fitView } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(props.initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(props.initialEdges);
@@ -71,13 +69,10 @@ const LayoutFlow = (props: { initialNodes: any; initialEdges: any }) => {
 
   useEffect(() => {
     onLayout();
-  }, [loading]);
+  }, [loading, props.recenter]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-screen h-screen animate-fadeup ">
-      <div className="fixed top-4 left-4 z-40 bg-transparent">
-        <p className="text-2xl font-semibold">Monarch</p>
-      </div>
+    <div className="flex flex-col items-center justify-center w-full h-full animate-fadeup">
       <ReactFlow
         className="z-0 absolute"
         nodes={nodes}
@@ -90,25 +85,31 @@ const LayoutFlow = (props: { initialNodes: any; initialEdges: any }) => {
         <Controls />
         <MiniMap />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-        <Panel position="top-right">
-          <button
-            onClick={() => onLayout()}
-            className="bg-neutral-100 hover:bg-neutral-200 text-black font-bold py-2 px-4 border-b-4 border-neutral-400 hover:border-neutral-400 rounded hover:scale-110 transition-transform duration-300"
-          >
-            <p>Recenter</p>
-          </button>
-        </Panel>
       </ReactFlow>
     </div>
   );
 };
 
-const SchemaVisualizer = (props: { graph: any }) => {
+const SchemaVisualizer = (props: {
+  buildGraph: any;
+  recenter: boolean;
+  issueNumber: number;
+}) => {
+  const [graph, setGraph] = useState(props.buildGraph());
+
+  useEffect(() => {
+    setGraph(props.buildGraph());
+    console.log(props.issueNumber, "so updated");
+    console.log(graph);
+  }, [props.issueNumber]);
+
   return (
     <ReactFlowProvider>
       <LayoutFlow
-        initialNodes={props.graph.nodes}
-        initialEdges={props.graph.edges}
+        initialNodes={graph.nodes}
+        initialEdges={graph.edges}
+        recenter={props.recenter}
+        issueNumber={props.issueNumber}
       />
     </ReactFlowProvider>
   );

@@ -30,20 +30,21 @@ const Navbar = () => {
               width={50}
               height={50}
               alt="monarch logo"
+              priority
             />
           </Link>
         </div>
         <div className="flex flex-row space-x-8  items-center">
           {navLinks.map((link) => (
-            <Link href={link.path}>
+            <Link key={link.title} href={link.path}>
               <p className="hover:text-black/50">{link.title}</p>
             </Link>
           ))}
-          <button className="bg-orange-400 hover:bg-orange-300 text-white font-bold py-2 px-4 border-b-4 border-orange-600 hover:border-orange-400 rounded hover:scale-110 transition-transform duration-300">
-            <Link href={"morph"}>
-              <p>Morph</p>
-            </Link>
-          </button>
+          <Link href={"upload"}>
+            <button className="bg-orange-400 hover:bg-orange-300 text-white font-bold py-2 px-4 border-b-4 border-orange-600 hover:border-orange-400 rounded hover:scale-110 transition-transform duration-300">
+              <p>Upload</p>
+            </button>
+          </Link>
         </div>
       </div>
     </div>

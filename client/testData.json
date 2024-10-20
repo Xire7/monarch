@@ -1,21 +1,42 @@
 {
   "datasets": [
     {
-      "name": "dataset2",
-      "cols": ["city", "population", "country", "continent"],
+      "name": "dataset1",
+      "cols": [
+        "full_name",
+        "birth_year",
+        "profession",
+        "annual_income",
+        "city"
+      ],
       "rows": [
-        ["New York", 8419000, "USA", "North America"],
-        ["Tokyo", 13929286, "Japan", "Asia"],
-        ["London", 8982000, "UK", "Europe"]
+        ["John Smith", 1985, "Software Engineer", 95000, "San Francisco"],
+        ["Emma Johnson", 1990, "Data Analyst", 75000, "New York"],
+        ["Michael Brown", 1988, "Product Manager", 110000, "Seattle"]
+      ]
+    },
+    {
+      "name": "dataset2",
+      "cols": ["employee", "age", "job_title", "salary", "location"],
+      "rows": [
+        ["Sarah Davis", 32, "UX Designer", 85000, "Los Angeles"],
+        ["Robert Wilson", 28, "Software Developer", 90000, "Austin"],
+        ["Lisa Thompson", 35, "Marketing Manager", 95000, "Chicago"]
       ]
     },
     {
       "name": "dataset3",
-      "cols": ["location", "long", "lat", "inhabitants"],
+      "cols": ["name", "birth_date", "occupation", "longitude", "latitude"],
       "rows": [
-        ["New York City", -74.006, 40.7128, 8400000],
-        ["Tokyo Metropolis", 139.6917, 35.6895, 13960000],
-        ["Greater London", -0.1276, 51.5074, 9000000]
+        ["Alex Turner", "1992-05-15", "Graphic Designer", -122.4194, 37.7749],
+        [
+          "Olivia Martinez",
+          "1987-11-22",
+          "Financial Analyst",
+          -74.006,
+          40.7128
+        ],
+        ["Daniel Lee", "1995-03-08", "Software Engineer", -122.3321, 47.6062]
       ]
     }
   ]

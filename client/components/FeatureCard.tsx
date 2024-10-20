@@ -13,7 +13,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
   description,
 }) => {
   return (
-    <div className="relative bg-gradient-to-br from-orange-50 to-white px-24 py-8 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group hover:scale-125 hover:duration-500 ">
+    <div className="relative bg-gradient-to-br from-orange-50 to-white px-24 py-8 rounded-lg hover:shadow-md transition-all duration-300 overflow-hidden group hover:scale-125 hover:duration-300 shadow-lg shadow-orange-400/70">
       <div className="absolute top-0 right-0 w-20 h-20 bg-orange-100 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-500 ease-in-out"></div>
       <div className="relative z-10">
         <div className="flex justify-center mb-4 transition-transform group-hover:scale-110 duration-300">

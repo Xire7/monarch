@@ -21,6 +21,8 @@ const SchemaNode = (props: { data: any }) => {
         <div className="flex flex-col">
           <div className="text-lg font-bold">{props.data.name}</div>
 
+          {props.data.used && <div className="text-lg font-bold">USED</div>}
+
           {isOpen && !props.data.root && (
             <div className="py-4">
               <p className="font-semibold">Values</p>

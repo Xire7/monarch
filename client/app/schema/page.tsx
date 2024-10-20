@@ -1,32 +1,58 @@
 "use client";
-import SchemaVisual from "@/components/SchemaVisualizer";
+import SchemaVisualizer from "@/components/SchemaVisualizer";
 import React, { useState, useEffect } from "react";
 import testData from "@/testData.json";
 import Link from "next/link";
 import ConfirmModal from "@/components/ConfirmModal";
+import Prompts from "@/components/Prompts";
+import { issues } from "../data/issues";
 
 const Schema = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const buildGraph = (data: any) => {
+  const [issueNumber, setIssueNumber] = useState(1);
+  const [complete, setComplete] = useState(false);
+
+  // temp
+  const data = testData;
+
+  const buildGraph = () => {
     const nodes = [];
     const edges = [];
+
     for (var k in data.datasets) {
       const dataset = data.datasets[k];
+
       // add dataset name
       nodes.push({
         id: dataset.name,
         type: "custom",
-        data: { name: dataset.name, values: [], root: true },
+        data: {
+          name: dataset.name,
+          values: [],
+          root: true,
+          used: false,
+        },
         position: { x: 0, y: 0 },
       });
+
       for (let j = 0; j < dataset.cols.length; ++j) {
         const rowValues = dataset.rows.map((values: any) => values[j]);
         const newNode = {
           id: dataset.name + j,
           type: "custom",
-          data: { name: dataset.cols[j], values: rowValues, root: false },
+          data: {
+            name: dataset.cols[j],
+            values: rowValues,
+            root: false,
+            used: false,
+          },
           position: { x: 0, y: 0 },
         };
+
+        newNode.data.used = issues[issueNumber - 1].cols_used.includes(
+          dataset.cols[j]
+        );
+
         nodes.push(newNode);
 
         const newEdge = {
@@ -42,26 +68,50 @@ const Schema = () => {
     return { nodes, edges };
   };
 
+  const updateIssueNumber = () => {
+    if (issueNumber < issues.length) {
+      setIssueNumber((prevNumber) => prevNumber + 1);
+    } else {
+      setComplete(true);
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center ">
-      <SchemaVisual graph={buildGraph(testData)} />
+    <div className="flex items-center justify-center w-screen h-screen">
+      {!complete && (
+        <Prompts
+          updateIssueNumber={updateIssueNumber}
+          issueNumber={issueNumber}
+          issuesCount={issues.length}
+          issueMessage={issues[issueNumber - 1].message}
+          additionalInfo={issues[issueNumber - 1].additional_info}
+        />
+      )}
+
+      <SchemaVisualizer
+        buildGraph={buildGraph}
+        recenter={issueNumber - 1 == issues.length}
+        issueNumber={issueNumber}
+      />
 
       {isOpen && (
         <ConfirmModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
-      <div className="fixed bottom-8 space-x-8 animate-fadeup">
-        <button className="bg-orange-400 hover:bg-orange-300 text-white font-bold border-b-4 border-orange-600 hover:border-orange-400 rounded-xl hover:scale-125 transition-transform duration-300">
-          <Link href={"schema"}>
-            <p className="text-xl font-medium p-6">Download CSV</p>
-          </Link>
-        </button>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="bg-neutral-100 hover:bg-neutral-200 text-black font-medium border-b-4 border-neutral-400 hover:border-neutral-400 rounded-xl hover:scale-125 transition-transform duration-300"
-        >
-          <p className="text-xl font-medium p-6">Return Home</p>
-        </button>
-      </div>
+      {complete && (
+        <div className="fixed bottom-8 space-x-8 animate-fadeup">
+          <button className="bg-orange-400 hover:bg-orange-300 text-white font-bold border-b-4 border-orange-600 hover:border-orange-400 rounded-xl hover:scale-125 transition-transform duration-300">
+            <Link href={"schema"}>
+              <p className="text-xl font-medium p-6">Download CSV</p>
+            </Link>
+          </button>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="bg-neutral-100 hover:bg-neutral-200 text-black font-medium border-b-4 border-neutral-400 hover:border-neutral-400 rounded-xl hover:scale-125 transition-transform duration-300"
+          >
+            <p className="text-xl font-medium p-6">Return Home</p>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

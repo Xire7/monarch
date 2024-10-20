@@ -20,25 +20,25 @@ const Header = () => {
         Elegantly harness unprocessed data for processed measures.
       </div>
       <div className="flex flex-row space-x-4 p-12 animate-fadeup">
-        <Link href={"morph"}>
+        <Link href={"upload"}>
           <button className="flex flex-row space-x-2 bg-orange-400 hover:bg-orange-300 text-white font-bold py-2 px-4 border-b-4 border-orange-600 hover:border-orange-400 rounded">
             <p>Check It Out</p>
             <ArrowRight />
           </button>
         </Link>
-        <Link href={"#features"}>
+        <Link href={"#guide"}>
           <button className="bg-neutral-100 hover:bg-neutral-200 text-black font-medium py-2 px-4 border-b-4 border-neutral-400 hover:border-neutral-400 rounded">
             <p>Learn More</p>
           </button>
         </Link>
       </div>
-      <Image
+      {/* <Image
         className="absolute bottom-0 right-0 opacity-40"
         src={monarch_butterflies}
         width={250}
         height={250}
         alt="monarch butterflies"
-      />
+      /> */}
     </div>
   );
 };

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const TeamCard = (props: { member: any }) => {
   return (
-    <div className="flex flex-col justify-center items-center bg-slate-50 h-80 w-64 rounded-xl border-2 border-slate-200 hover:scale-125 transition-transform duration-300">
+    <div className="flex flex-col justify-center items-center bg-slate-50 h-80 w-64 rounded-xl border-2 border-slate-200 hover:scale-125 transition-transform duration-300 shadow-lg">
       <Image
         width="100"
         height="100"
