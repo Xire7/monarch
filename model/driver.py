@@ -365,8 +365,6 @@ def gen_issues(jdfs):
     # return json.dumps(issues)
     return issues
 
-print(gen_issues(x))
-
 def buff_issues(issues):
     pass
 
