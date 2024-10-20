@@ -15,9 +15,9 @@ router.post('/upload/getPresignedUrl', async (req, res) => {
 });
 router.post('/upload/notifyModel', async (req, res): Promise<void> => {
   const { fileNames } = req.body;
-
+  console.log("notifyModel: ", fileNames);
   if (!fileNames || !Array.isArray(fileNames) || fileNames.length === 0) {
-    res.status(400).send('fileNames required');
+    res.status(400).json({ error: 'fileNames required' });
     return;
   }
 
