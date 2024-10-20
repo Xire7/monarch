@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import json
@@ -7,6 +7,7 @@ from typing import List, Dict, Any, Optional
 import boto3
 import csv
 import io
+from driver import gen_issues
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 from uuid import uuid4
@@ -77,10 +78,12 @@ async def get_s3_file(file_id: str) -> Dict[str, Any]:
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON file")   
 
-@app.get("/issues")
-async def get_issues() -> Dict[str, Any]:
-    # Implement your logic here
-    pass
+@app.post("/match-to-issues")
+async def get_issues(request: Request) -> Dict[str, Any]:
+    data = await request.json()
+    jdfs = data['json_data']
+    issues = gen_issues(jdfs)
+    return issues
 
 def datasetS3CsvToJson(bucket_name: str, s3_key: str) -> Optional[Dict[str, Any]]:
     dataset: Dict[str, Any] = {}
