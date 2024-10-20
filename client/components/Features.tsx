@@ -10,18 +10,18 @@ const Features = () => {
       <div className="flex flex-col space-y-10">
         <FeatureCard
           icon={Zap}
-          title="Feature 1"
-          description="Description of Feature 1"
-        />
+          title="Intuitive Data Engineering"
+          description="Fast, indivdualized choices reduce complex data engineering to simple clicks."
+        /> 
         <FeatureCard
           icon={FileSpreadsheet}
-          title="Feature 2"
-          description="Description of Feature 2"
+          title="Multi-Dimensional Column Matching"
+          description="Dynamic dataset evaluation allows seamless adaptability to diverse dataset structures."
         />
         <FeatureCard
           icon={RefreshCw}
-          title="Feature 3"
-          description="Description of Feature 3"
+          title="Precision Data Synchronization"
+          description="High-precision, context-aware connections minimize denormalized values and enhance data quality."
         />
       </div>
     </div>

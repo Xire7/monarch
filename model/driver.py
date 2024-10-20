@@ -66,38 +66,6 @@ def get_cats(jdts):
 
     return full_response
 
-x = '''
-    [
-  {
-    "name": "dataset1",
-    "cols": ["full_name", "birth_year", "profession", "annual_income", "city"],
-    "rows": [
-      ["John Smith", 1985, "Software Engineer", 95000, "San Francisco"],
-      ["Emma Johnson", 1990, "Data Analyst", 75000, "New York"],
-      ["Michael Brown", 1988, "Product Manager", 110000, "Seattle"]
-    ]
-  },
-  {
-    "name": "dataset2",
-    "cols": ["employee", "age", "job_title", "salary", "location"],
-    "rows": [
-      ["Sarah Davis", 32, "UX Designer", 85000, "Los Angeles"],
-      ["Robert Wilson", 28, "Software Developer", 90000, "Austin"],
-      ["Lisa Thompson", 35, "Marketing Manager", 95000, "Chicago"]
-    ]
-  },
-  {
-    "name": "dataset3",
-    "cols": ["name", "birth_date", "occupation", "longitude", "latitude"],
-    "rows": [
-      ["Alex Turner", "1992-05-15", "Graphic Designer", -122.4194, 37.7749],
-      ["Olivia Martinez", "1987-11-22", "Financial Analyst", -74.0060, 40.7128],
-      ["Daniel Lee", "1995-03-08", "Software Engineer", -122.3321, 47.6062]
-    ]
-  }
-  ]
-    '''
-
 def unjsonify(jdfs):
     data = json.loads(jdfs)
     dfs = {}
@@ -396,8 +364,6 @@ def gen_issues(jdfs):
 
     # return json.dumps(issues)
     return issues
-
-print(gen_issues(x))
 
 def buff_issues(issues):
     pass
