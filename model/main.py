@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import json
@@ -7,6 +7,7 @@ from typing import List, Dict, Any, Optional
 import boto3
 import csv
 import io
+from driver import gen_issues
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 from uuid import uuid4
@@ -15,6 +16,9 @@ from urllib.parse import urlparse
 load_dotenv()
 
 app = FastAPI()
+
+class S3IDList(BaseModel):
+    fileNames: List[str]
 
 s3 = boto3.client(
     's3',
@@ -77,10 +81,12 @@ async def get_s3_file(file_id: str) -> Dict[str, Any]:
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON file")   
 
-@app.get("/issues")
-async def get_issues() -> Dict[str, Any]:
-    # Implement your logic here
-    pass
+@app.post("/match-to-issues")
+async def get_issues(request: Request) -> Dict[str, Any]:
+    data = await request.json()
+    jdfs = data['json_data']
+    issues = gen_issues(jdfs)
+    return issues
 
 def datasetS3CsvToJson(bucket_name: str, s3_key: str) -> Optional[Dict[str, Any]]:
     dataset: Dict[str, Any] = {}
@@ -99,7 +105,7 @@ def datasetS3CsvToJson(bucket_name: str, s3_key: str) -> Optional[Dict[str, Any]
         return None
     return dataset
 
-def csvsToJson(s3_ids: List[str], bucket_name: str) -> str:
+def csvsToJson(s3_ids: List[str], bucket_name) -> str:
     datasets: List[Dict[str, Any]] = []
     for s3_id in s3_ids:
         try:
@@ -110,18 +116,39 @@ def csvsToJson(s3_ids: List[str], bucket_name: str) -> str:
                 print(f"Successfully processed: {s3_id}")
         except Exception as e:
             print(f"Error processing {s3_id}: {str(e)}")
-    return json.dumps(datasets, indent=2)
+    
+    json_datasets = json.dumps(datasets, indent=2)
+    issues = gen_issues(json_datasets)
 
-class S3IDList(BaseModel):
-    s3_id_arr: List[str]
+    # Generate a unique S3 key for the results
+    result_key = f"matching_results_{uuid4()}.json"
 
-@app.post("/csv-to-json")
-async def csv_to_json(s3_id_list: S3IDList) -> str:
+    # Upload the issues (JSON array) to S3
+    try:
+        s3.put_object(
+            Bucket=S3_BUCKET_LLM_MATCHES,  # Make sure this global variable is defined
+            Key=result_key,
+            Body=json.dumps(issues),
+            ContentType='application/json'
+        )
+        print(f"Successfully uploaded results to S3: {result_key}")
+    except Exception as e:
+        print(f"Error uploading results to S3: {str(e)}")
+        return str(e)  # or handle this error as appropriate for your application
+
+    # Return the S3 key of the uploaded results
+    return result_key
+
+@app.post("/process-files")
+async def process_files(s3_id_list: S3IDList) -> str:
     try:
         bucket_name = S3_BUCKET_UI_DATA
-        print(s3_id_list.s3_id_arr)
-        s3_keys = [urlparse(uri).path.lstrip('/') for uri in s3_id_list.s3_id_arr]
-        json_content = csvsToJson(s3_keys, bucket_name)
+        print(s3_id_list.fileNames)
+        for i in range(0, len(s3_id_list.fileNames)):
+            prefix = f"s3://{S3_BUCKET_UI_DATA}/"
+            s3_id_list.fileNames[i] = prefix + s3_id_list.fileNames[i]
+        s3_keys = [urlparse(uri).path.lstrip('/') for uri in s3_id_list.fileNames]
+        json_content = csvsToJson(s3_keys, S3_BUCKET_UI_DATA)
         return json_content
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

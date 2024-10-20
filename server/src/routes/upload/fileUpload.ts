@@ -1,12 +1,13 @@
 import express from 'express';
-import { generatePresignedUrl } from '../../handleUserS3Upload/createS3PresignedUrl';
+import { insertWithPresignedUrl } from '../../handleUserS3Upload/createS3PresignedUrl';
 import { handleUserS3Upload } from '../../handleUserS3Upload/handleS3UploadFinished';
 const router = express.Router();
 router.post('/upload/getPresignedUrl', async (req, res) => {
   const { fileName, fileType } = req.body;
   //temporarily authorize user to upload csv to S3
   try {
-    const presignedUrl = await generatePresignedUrl(fileName, fileType);
+    const presignedUrl = await insertWithPresignedUrl(fileName, fileType);
+    
     res.json({ presignedUrl });
   } catch (error) {
     res.status(500).json({ error: 'Failed to generate presigned URL' });
@@ -14,15 +15,15 @@ router.post('/upload/getPresignedUrl', async (req, res) => {
 });
 router.post('/upload/notifyModel', async (req, res): Promise<void> => {
   const { fileNames } = req.body;
-
+  console.log("notifyModel: ", fileNames);
   if (!fileNames || !Array.isArray(fileNames) || fileNames.length === 0) {
-    res.status(400).send('Files are required');
+    res.status(400).json({ error: 'fileNames required' });
     return;
   }
 
   try {
     const result = await handleUserS3Upload(fileNames); 
-    res.status(200).json(result);  //forward the result S3 URL to the client
+    res.status(200).json(result);  //forward the result S3 presigned URL to the client
   } catch (error) {
     if (error instanceof Error)
       res.status(500).json({ error: error.message });
