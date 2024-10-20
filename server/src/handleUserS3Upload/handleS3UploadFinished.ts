@@ -10,7 +10,8 @@ const s3 = new S3Client({
     }
   });
 export const handleUserS3Upload = async (fileNames: string[]) => {
-    if (fileNames.length == 0) return {success:false} //fail if empty
+    if (fileNames.length === 0) return {success:false} //fail if empty
+    console.log("File has been uploaded by client")
     //file has been uploaded by client
     try {
         //notify model to process file
@@ -24,7 +25,7 @@ export const handleUserS3Upload = async (fileNames: string[]) => {
             Key: s3ResultObjectName,
           };
         const command = new GetObjectCommand(params);
-        const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 60 * 5 }); // 5 minutes expiry
+        const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 60 * 10 }); // 10 minutes expiry
         //create a presigned url for user
 
         return { success: true, presignedUrl }; //return s3 object
