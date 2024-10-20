@@ -1,8 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { CornerRightDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { CornerRightDown } from "lucide-react";
 import Issue from "@/components/Issue";
-import Link from "next/link";
 
 const Identify = () => {
   // temp
