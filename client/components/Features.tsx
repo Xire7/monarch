@@ -4,8 +4,8 @@ import { FileSpreadsheet, RefreshCw, Zap } from "lucide-react";
 
 const Features = () => {
   return (
-    <div className="flex flex-col items-center justify-center bg-stone-900 min-h-svh">
-      <p className="text-4xl font-semibold py-16 text-white">Features</p>
+    <div className="flex flex-col items-center justify-center bg-stone-900 min-h-svh p-16">
+      <p className="text-4xl font-semibold pb-16 text-white">Features</p>
 
       <div className="flex flex-col space-y-10">
         <FeatureCard
