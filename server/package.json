@@ -4,13 +4,15 @@
   "description": "CalHacks Project - Dylan Vo, Evan Servito, Zion Mateo, Arun Malani",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node dist/server.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "start": "npm run build && node dist/app.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts",
     "build": "tsc"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1691.0",
+    "dotenv": "^16.4.5",
     "express": "^4.21.1"
   },
   "devDependencies": {
