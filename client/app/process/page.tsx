@@ -1,16 +1,12 @@
-import React from 'react'
-import MultiCSVUpload from '@/components/MultiCSVUpload';
-import TableVisual from '@/components/TableVisual';
+import React from "react";
+import MultiCSVUpload from "@/components/MultiCSVUpload";
 
 const Process = () => {
   return (
     <>
-        <MultiCSVUpload/>
-        <TableVisual/>
-
+      <MultiCSVUpload />
     </>
-
-  )
-}
+  );
+};
 
 export default Process;

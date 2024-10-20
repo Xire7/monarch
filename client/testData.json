@@ -1,0 +1,22 @@
+{
+  "datasets": [
+    {
+      "name": "dataset2",
+      "cols": ["city", "population", "country", "continent"],
+      "rows": [
+        ["New York", 8419000, "USA", "North America"],
+        ["Tokyo", 13929286, "Japan", "Asia"],
+        ["London", 8982000, "UK", "Europe"]
+      ]
+    },
+    {
+      "name": "dataset3",
+      "cols": ["location", "long", "lat", "inhabitants"],
+      "rows": [
+        ["New York City", -74.006, 40.7128, 8400000],
+        ["Tokyo Metropolis", 139.6917, 35.6895, 13960000],
+        ["Greater London", -0.1276, 51.5074, 9000000]
+      ]
+    }
+  ]
+}
