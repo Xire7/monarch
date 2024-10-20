@@ -18,7 +18,7 @@ load_dotenv()
 app = FastAPI()
 
 class S3IDList(BaseModel):
-    s3_id_arr: List[str]
+    fileNames: List[str]
 
 s3 = boto3.client(
     's3',
@@ -143,8 +143,11 @@ def csvsToJson(s3_ids: List[str], bucket_name) -> str:
 async def process_files(s3_id_list: S3IDList) -> str:
     try:
         bucket_name = S3_BUCKET_UI_DATA
-        print(s3_id_list.s3_id_arr)
-        s3_keys = [urlparse(uri).path.lstrip('/') for uri in s3_id_list.s3_id_arr]
+        print(s3_id_list.fileNames)
+        for i in range(0, len(s3_id_list.fileNames)):
+            prefix = f"s3://{S3_BUCKET_UI_DATA}/"
+            s3_id_list.fileNames[i] = prefix + s3_id_list.fileNames[i]
+        s3_keys = [urlparse(uri).path.lstrip('/') for uri in s3_id_list.fileNames]
         json_content = csvsToJson(s3_keys, S3_BUCKET_UI_DATA)
         return json_content
     except Exception as e:
